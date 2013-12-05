@@ -1,0 +1,33 @@
+
+<script>
+function id_to_windowname(text) {
+    text = text.replace(/\./g, '__dot__');
+    text = text.replace(/\-/g, '__dash__');
+    return text;
+}
+
+function showAddAnotherPopup(triggeringLink) {
+    var name = triggeringLink.id.replace(/^add_/, '');
+    name = id_to_windowname(name);
+    href = triggeringLink.href
+    //alert(href);
+    if (href.indexOf('?') == -1) {
+        href += '?_popup=1';
+    } else {
+        href  += '&_popup=1';
+    }
+    var win = window.open(href, name, 'height=500,width=800,resizable=yes,scrollbars=yes');
+    win.focus();
+    return false;
+}
+</script>
+<form action="" method="POST"> {% csrf_token %}
+<table>
+{{bf.as_table}}
+<a href="tag_add/" class="add-another" id="add_id_tag" onclick="return showAddAnotherPopup(this);">添加经营内容</a><br/>
+<a href="user_add/" class="add-another" id="add_id_adder" onclick="return showAddAnotherPopup(this);">添加管理员</a><br/>
+<a href="user_add/" class="add-another" id="add_id_installor" onclick="return showAddAnotherPopup(this);">添加安装员</a>
+</table>
+<input type="submit" value="确定">
+
+</form>

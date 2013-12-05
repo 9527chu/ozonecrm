@@ -1,0 +1,40 @@
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title></title>
+</head>
+<body>
+<div id="user">{% csrf_token %}
+username: <input type="text" id="rnumber" onkeydown="userlogin()"/>
+{{rf.as_p}}
+</div>
+<h1> hello </h1>
+
+<script type="text/javascript" >
+var hr = new XMLHttpRequest();
+//alert(typeof hr);
+
+hr.overrideMimeType('text/xml');
+
+hr.onreadystatechange = process;
+
+function userlogin(){
+    var rnumber = document.getElementById('rnumber').value;
+    //hr.open('get', '/blog/regist/?username='+uname,true);
+    //hr.send(null);
+    
+    hr.open('post','/regist/',true);
+    hr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    hr.send('rnumber='+rnumber);
+}
+function process(){
+    if (hr.readyState == 4){
+     var user = document.getElementById('user');
+     //alert(hr.responseText);
+     user.innerHTML = hr.responseText;
+     //alert(hr.reasponseText);
+    }
+}
+
+
+</script>
+</body>

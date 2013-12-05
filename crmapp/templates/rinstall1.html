@@ -1,0 +1,111 @@
+<form name="form1" action="/rinstall" method="post" >{% csrf_token %}
+<input type="text" name="number" id="number" onblur="userlogin()">
+</form>
+<div id='user'>
+<div>
+
+<!--<form name="form2" action="" method="post" >{% csrf_token %}
+<table>
+{%if routing.gateway%}
+<strong>gateway:</strong>{{routing.gateway}}<br/>
+{% endif %}
+{% if routing.password%}
+<strong>password:</strong>{{routing.password}}<br/>
+{% endif %}
+{{rf.is_main}}
+{{rf.mac}}
+{{rf.lanip}}
+{{rf.port}}
+</table>
+{{routing.mac}}
+<input type="submit" value="sub">
+<form>-->
+<script>
+var hr = new XMLHttpRequest();
+hr.overrideMimeType('text/xml');
+
+hr.onreadystatechange = process;
+
+
+function userlogin(){
+    var number = document.getElementById('number').value;
+    //hr.open('get', '/blog/regist/?username='+uname,true);
+    //hr.send(null);
+    
+    hr.open('post','/Routing_install',true);
+    hr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+    hr.send('number='+number);
+
+function process(){
+    if (hr.readyState == 4){
+     var user = document.getElementById('user');
+     alert(hr.responseText);
+     user.innerHTML = hr.responseText;
+     //alert(hr.reasponseText);
+    }
+}
+
+
+
+
+
+
+//var number=document.getElementById('id_number');
+//var gateway=document.getElementById('id_gateway');
+//var password=document.getElementById('id_password');
+//number.style.display='none';
+//gateway.style.display='none';
+//password.style.display='none';
+//var arr=document.getElementsByTagName("label");
+//  for(i=0;i<arr.length;i++)
+//              {
+//                     var forvalue=arr[i].getAttributeNode("for").value;
+//                     if(forvalue==number.id)
+//                     {
+//                           arr[i].style.display='none';
+//                     }
+//                     if(forvalue==gateway.id)
+//                     {
+//                           arr[i].style.display='none';
+//                     }
+//                     if(forvalue==password.id)
+//                     {
+//                           arr[i].style.display='none';
+//                     }
+//              }
+</script>
+<!--<form name="form2" action="" method="post" >{% csrf_token %}
+<table>
+<tr>
+<label>网关ID:</label>{{gateway}}
+</tr>
+<br />
+<tr>
+<label>路由器密码:</label>{{rpassword}}
+</tr>
+<br />
+是否是主路由:{% if is_main %}<select name="im">
+<option>{{is_main}}</option>
+<option>False</option>
+</select>
+{% endif %}
+<br />
+<br />
+mac地址:{% if mac %}<input type="text" value="{{mac}}"><br/>
+{% endif %}
+<br />
+SSID:{% if ssid %}<input type="text" value="{{ssid}}"><br/>
+{% endif %}
+<br />
+LANIP:{% if lanip %}<input type="text" value="{{lanip}}"><br/>
+{% endif %}
+<br />
+端口:{% if port %}<input type="text" value="{{port}}">
+{% endif %}
+</table>
+<input type="submit" value="submit">
+{{business}}
+{{shopname}}
+{{tag}}
+{{district}}
+</form>-->

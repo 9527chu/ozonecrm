@@ -1,0 +1,35 @@
+<table>
+<tr>
+<td>商家编号</td>
+<td>商店名称</td>
+<td>门店名称</td>
+<td>所在地区</td>
+<td>地址</td>
+<td>添加人</td>
+<td>添加日期</td>
+<td>状态</td>
+<td>安装人员</td>
+<td>安装日期</td>
+<td>备注</td>
+</tr>
+
+{% for busy in business %}
+<tr>
+
+<td>{{ busy.number }}</td>
+<td>{{ busy.name }}</td>
+<td>{{ busy.shopname }}</td>
+<td>{{ busy.district }}</td>
+<td>{{ busy.address }}</td>
+<td>{{ busy.adder }}</td>
+<td>{{ busy.addtime }}</td>
+<td>{{ busy.condition }}</td>
+<td>{{ busy.installor }}</td>
+<td>{{ busy.installtime }}</td>
+<td>{{ busy.remarks }}</td>
+</tr>
+{% endfor %}
+</table>
+
+
+
