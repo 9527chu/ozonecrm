@@ -1,0 +1,9 @@
+
+<form action="" method="POST"> {% csrf_token %}
+<table>
+{{df.as_table}}
+路由:{{router}}<br />
+商家:{{busy}}
+</table>
+<input type="submit" value="确定">
+</form>

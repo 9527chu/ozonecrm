@@ -5,8 +5,8 @@ from django.contrib.auth.models import User, Group
 from crmapp.models import *
 
 class BusinessAdmin(admin.ModelAdmin):
-    list_display = ['number', 'name', 'shopname', 'district', 'address', 'bmap', 'adder', 'addtime', 'condition', 'installor', 'installtime', 'remarks']
-    search_fields = ['number', 'name', 'shopname']
+    list_display = ['number', 'name', 'district', 'address', 'bmap', 'condition', 'installor', 'installtime', 'remarks']
+    search_fields = ['number', 'name']
     list_filter = ['number', 'name']
     list_per_page = 10
     save_as = True

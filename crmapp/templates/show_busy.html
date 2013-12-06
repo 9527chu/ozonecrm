@@ -5,12 +5,12 @@
 <td>门店名称</td>
 <td>所在地区</td>
 <td>地址</td>
-<td>添加人</td>
-<td>添加日期</td>
 <td>状态</td>
 <td>安装人员</td>
 <td>安装日期</td>
+<td>操作</td>
 <td>备注</td>
+
 </tr>
 
 {% for busy in business %}
@@ -21,11 +21,27 @@
 <td>{{ busy.shopname }}</td>
 <td>{{ busy.district }}</td>
 <td>{{ busy.address }}</td>
-<td>{{ busy.adder }}</td>
-<td>{{ busy.addtime }}</td>
-<td>{{ busy.condition }}</td>
-<td>{{ busy.installor }}</td>
-<td>{{ busy.installtime }}</td>
+<td>{% if busy.condition == "not_installed" %}未安装{% endif %}
+    {% if busy.condition == "installed" %}已安装{% endif %}</td>
+<td>{% if busy.condition == "installed"%}
+    {{ busy.installor }}
+    {% else %}
+    ----
+    {% endif %}
+</td>
+<td>{% if busy.condition == "installed"%}
+    {{ busy.installtime }}
+    {% else %}
+    ----
+    {% endif %}
+</td>
+<td>{% for g in user.groups.all %}
+{% if 'mnmn' == g %}
+<a href='#'>指定安装人员</a>
+{% endif %}
+{% endfor %}
+
+</td>
 <td>{{ busy.remarks }}</td>
 </tr>
 {% endfor %}

@@ -5,12 +5,14 @@ from django.contrib.auth.models import User
 
 
 CONDITION_CHOICES= (
-     (u'未安装', u'未安装'),
-     (u'安装中', u'安装中'),
-     (u'已安装', u'已安装中'),
+     
+     (u'---', u'---'),
+     (u'not_installed', u'未安装'),
+     (u'installed', u'已安装中'),
 )
 
 idtype=(
+    (u'---', u'---'),
     (u'管理员', u'管理员'),
     (u'安装员', u'安装员'),
 )
@@ -31,7 +33,10 @@ class Maintainer(models.Model):
         verbose_name = u'人员管理'
         verbose_name_plural = u'人员管理'
         ordering = ['number']
-
+        permissions = (
+        ('can_direct', 'can direct installor'),
+        ('can_install', 'can install'),
+        )
 
 class Tag(models.Model):
     tag = models.CharField(max_length=30, verbose_name=u'经营内容')
@@ -51,9 +56,6 @@ class Business(models.Model):
     district = models.CharField(max_length=300, verbose_name=u'地区')
     address = models.CharField(max_length=300, verbose_name=u'地址')
     bmap = models.BooleanField(verbose_name=u'地图')
-    adder = models.ForeignKey(Maintainer, verbose_name=u'添加人员', related_name='adder')
-    addtime = models.DateField(verbose_name=u'添加日期')
-    condition = models.CharField(max_length=30, choices=CONDITION_CHOICES,verbose_name=u'状态')
     installor = models.ForeignKey(Maintainer, verbose_name=u'安装人员', related_name='installor')
     installtime = models.DateField(verbose_name=u'安装时间')
     remarks = models.CharField(max_length=150, verbose_name=u'备注')
@@ -69,15 +71,12 @@ class Business(models.Model):
 
 class Routing(models.Model):
     number = models.CharField(max_length=30, verbose_name=u'路由编号')
-    gateway = models.CharField(max_length=50, verbose_name=u'网关ID')
     password = models.CharField(max_length=50, verbose_name=u'路由密码')
-    is_main = models.BooleanField(verbose_name=u'是否是主要路由')
     mac = models.CharField(max_length=30, verbose_name=u'mac地址')
     ssid = models.CharField(max_length=30, verbose_name=u'ssid')
-    lanip = models.CharField(max_length=30, verbose_name=u'LAN_IP')
-    port  = models.CharField(max_length=30, verbose_name=u'远程端口')
+    condition = models.CharField(max_length=30, choices=CONDITION_CHOICES,verbose_name=u'状态')
     remarks = models.CharField(max_length=30, verbose_name=u'备注')    
-    business = models.OneToOneField(Business, verbose_name=u'商家', blank=True)
+    business = models.ForeignKey(Business, verbose_name=u'商家', blank=True)
     
     def __unicode__(self):
         return self.ssid

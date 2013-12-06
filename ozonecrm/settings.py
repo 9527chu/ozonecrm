@@ -72,6 +72,7 @@ STATIC_ROOT = os.path.join(SITE_ROOT,'static')
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
+LOGIN_URL = '/login'
 # Additional locations of static files
 STATICFILES_DIRS = (
     ("css", os.path.join(STATIC_ROOT,'css')),
