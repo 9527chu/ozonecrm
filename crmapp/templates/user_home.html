@@ -1,0 +1,6 @@
+{{user}}<br />
+{{maintainer.name}}<br />
+{{maintainer.identity}}<br />
+{% for r in maintainer.installor.all %}
+{{r}}<br />
+{% endfor %}

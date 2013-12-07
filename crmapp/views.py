@@ -1,5 +1,6 @@
 # Create your views here.
 #coding:utf-8
+import datetime
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -46,9 +47,9 @@ class RoutingForm(forms.Form):
     number = forms.CharField()
     gateway = forms.CharField()
     password = forms.CharField()
-    is_main = forms.BooleanField()
     mac = forms.CharField()
     ssid = forms.CharField()
+    installor = forms.ModelChoiceField(queryset=Maintainer.objects.all(),empty_label=None)
     remarks = forms.CharField()
     queryset = Business.objects.all()
     business = forms.ModelChoiceField(queryset=queryset,empty_label=None)
@@ -81,13 +82,21 @@ def direct_user(request,id=None):
     variables = RequestContext(request,{'df':df,'router':router,'busy':busy})
     return render_to_response('direct.html',variables)
 
+def show_info(request, rid=None, uid=None):
+    router = Routing.objects.get(id=rid)
+    user = request.user
+    return render_to_response('show_info.html',locals())
        
-def Routing_install(request, id=None):
-    condition = not_installed
-    router = Routing.objects.get(id=id)
-    busy = router.business
-     
-    return render_to_response('routinginstall.html',variables)
+def routing_install(request, rid=None, uid=None):
+    router = Routing.objects.get(id=rid)
+    installor = Maintainer.objects.get(id=uid)
+    if router:
+        router.condition = "installed"
+        router.installor = installor
+        router.installtime = datetime.date.today()
+        router.save()
+        return HttpResponseRedirect('/show_router')
+    return render_to_response('routinginstall.html',locals())
 
 
 def ulogin(request):
@@ -107,6 +116,12 @@ def ulogin(request):
         lf = LogForm()
     variables = RequestContext(request, {'lf':lf})
     return render_to_response('ulogin.html',variables)
+
+
+def user_home(request):
+    user = request.user
+    maintainer = user.maintainer
+    return render_to_response('user_home.html',locals())
 @login_required    
 def user_add(request):
     if request.method == 'POST':
@@ -204,17 +219,15 @@ def tag_add(request):
 @login_required    
 def show_busy(request):
     user = request.user
-    group = user.groups.all()[0]
     business = Business.objects.all()
-    variables = RequestContext(request,{'business':business,'group':group})
+    variables = RequestContext(request,{'business':business})
     return render_to_response('show_busy.html',variables)
 
 @login_required    
 def show_router(request):
     user = request.user
-    group = user.groups.all()[0]
     routers = Routing.objects.all()
-    variables = RequestContext(request,{'routers':routers,'group':group})
+    variables = RequestContext(request,{'routers':routers})
     return render_to_response('show_router.html',variables)
 
 def ulogout(request):

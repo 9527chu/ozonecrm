@@ -4,7 +4,10 @@
 <td>路由密码</td>
 <td>路由mac</td>
 <td>路由ssid</td>
+<td>状况</td>
 <td>操作</td>
+<td>安装人</td>
+<td>安装时间</td>
 <td>备注</td>
 
 </tr>
@@ -16,11 +19,26 @@
 <td>{{ router.password }}</td>
 <td>{{ router.mac }}</td>
 <td>{{ router.ssid }}</td>
-<td><a href='/direct/{{router.id}}'>指定安装人员</a></td>
+<td>
+{% if router.condition == "not_installed" %}
+未安装
+{% else %}
+已安装
+{% endif %}
+</td>
+{% if router.condition == "not_installed" %}
+<td>
+<a href='/show_info/{{router.id}}/{{user.id}}'>安装</a>
+</td>
+<td>---</td>
+<td>---</td>
+{% else %}
+<td>---</td>
+<td>{{router.installor}}</td>
+<td>{{router.installtime}}</td>
+{% endif %}
 <td>{{ router.remarks }}</td>
 </tr>
-{{router}}
-{{busy}}
 {% endfor %}
 </table>
 

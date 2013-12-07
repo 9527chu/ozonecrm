@@ -13,8 +13,8 @@ CONDITION_CHOICES= (
 
 idtype=(
     (u'---', u'---'),
-    (u'管理员', u'管理员'),
-    (u'安装员', u'安装员'),
+    (u'Administrator', u'管理员'),
+    (u'installor', u'安装员'),
 )
 
 class Maintainer(models.Model):
@@ -56,8 +56,6 @@ class Business(models.Model):
     district = models.CharField(max_length=300, verbose_name=u'地区')
     address = models.CharField(max_length=300, verbose_name=u'地址')
     bmap = models.BooleanField(verbose_name=u'地图')
-    installor = models.ForeignKey(Maintainer, verbose_name=u'安装人员', related_name='installor')
-    installtime = models.DateField(verbose_name=u'安装时间')
     remarks = models.CharField(max_length=150, verbose_name=u'备注')
 
     def __unicode__(self):
@@ -75,6 +73,8 @@ class Routing(models.Model):
     mac = models.CharField(max_length=30, verbose_name=u'mac地址')
     ssid = models.CharField(max_length=30, verbose_name=u'ssid')
     condition = models.CharField(max_length=30, choices=CONDITION_CHOICES,verbose_name=u'状态')
+    installor = models.ForeignKey(Maintainer, verbose_name=u'安装人员', related_name='installor',blank=True,null=True)
+    installtime = models.DateField(verbose_name=u'安装时间',blank=True,null=True)
     remarks = models.CharField(max_length=30, verbose_name=u'备注')    
     business = models.ForeignKey(Business, verbose_name=u'商家', blank=True)
     

@@ -8,95 +8,20 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Maintainer'
-        db.create_table(u'crmapp_maintainer', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('phonenumber', self.gf('django.db.models.fields.IntegerField')(max_length=200)),
-            ('headImg', self.gf('django.db.models.fields.files.FileField')(max_length=100, blank=True)),
-            ('remarks', self.gf('django.db.models.fields.TextField')()),
-            ('identity', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, blank=True)),
-        ))
-        db.send_create_signal(u'crmapp', ['Maintainer'])
 
-        # Adding model 'Tag'
-        db.create_table(u'crmapp_tag', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('tag', self.gf('django.db.models.fields.CharField')(max_length=30)),
-        ))
-        db.send_create_signal(u'crmapp', ['Tag'])
+        # Changing field 'Routing.installor'
+        db.alter_column(u'crmapp_routing', 'installor_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['crmapp.Maintainer']))
 
-        # Adding model 'Business'
-        db.create_table(u'crmapp_business', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('shopname', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('district', self.gf('django.db.models.fields.CharField')(max_length=300)),
-            ('address', self.gf('django.db.models.fields.CharField')(max_length=300)),
-            ('bmap', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('remarks', self.gf('django.db.models.fields.CharField')(max_length=150)),
-        ))
-        db.send_create_signal(u'crmapp', ['Business'])
-
-        # Adding M2M table for field tag on 'Business'
-        m2m_table_name = db.shorten_name(u'crmapp_business_tag')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('business', models.ForeignKey(orm[u'crmapp.business'], null=False)),
-            ('tag', models.ForeignKey(orm[u'crmapp.tag'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['business_id', 'tag_id'])
-
-        # Adding model 'Routing'
-        db.create_table(u'crmapp_routing', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('mac', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('ssid', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('condition', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('installor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='installor', to=orm['crmapp.Maintainer'])),
-            ('installtime', self.gf('django.db.models.fields.DateField')()),
-            ('remarks', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('business', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['crmapp.Business'], blank=True)),
-        ))
-        db.send_create_signal(u'crmapp', ['Routing'])
-
-        # Adding model 'CooperInfo'
-        db.create_table(u'crmapp_cooperinfo', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('number', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('starttime', self.gf('django.db.models.fields.DateField')()),
-            ('endtime', self.gf('django.db.models.fields.DateField')()),
-            ('cooperImg', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-            ('desc', self.gf('django.db.models.fields.TextField')()),
-            ('business', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['crmapp.Business'], unique=True)),
-        ))
-        db.send_create_signal(u'crmapp', ['CooperInfo'])
-
+        # Changing field 'Routing.installtime'
+        db.alter_column(u'crmapp_routing', 'installtime', self.gf('django.db.models.fields.DateField')(null=True))
 
     def backwards(self, orm):
-        # Deleting model 'Maintainer'
-        db.delete_table(u'crmapp_maintainer')
 
-        # Deleting model 'Tag'
-        db.delete_table(u'crmapp_tag')
+        # Changing field 'Routing.installor'
+        db.alter_column(u'crmapp_routing', 'installor_id', self.gf('django.db.models.fields.related.ForeignKey')(default='zhangsan', to=orm['crmapp.Maintainer']))
 
-        # Deleting model 'Business'
-        db.delete_table(u'crmapp_business')
-
-        # Removing M2M table for field tag on 'Business'
-        db.delete_table(db.shorten_name(u'crmapp_business_tag'))
-
-        # Deleting model 'Routing'
-        db.delete_table(u'crmapp_routing')
-
-        # Deleting model 'CooperInfo'
-        db.delete_table(u'crmapp_cooperinfo')
-
+        # Changing field 'Routing.installtime'
+        db.alter_column(u'crmapp_routing', 'installtime', self.gf('django.db.models.fields.DateField')(default=datetime.datetime(2013, 12, 7, 0, 0)))
 
     models = {
         u'auth.group': {
@@ -173,8 +98,8 @@ class Migration(SchemaMigration):
             'business': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['crmapp.Business']", 'blank': 'True'}),
             'condition': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'installor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'installor'", 'to': u"orm['crmapp.Maintainer']"}),
-            'installtime': ('django.db.models.fields.DateField', [], {}),
+            'installor': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'installor'", 'null': 'True', 'to': u"orm['crmapp.Maintainer']"}),
+            'installtime': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'mac': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'number': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '50'}),

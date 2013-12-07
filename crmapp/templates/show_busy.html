@@ -6,8 +6,8 @@
 <td>所在地区</td>
 <td>地址</td>
 <td>状态</td>
-<td>安装人员</td>
-<td>安装日期</td>
+<td>安装人</td>
+<td>已安装路由</td>
 <td>操作</td>
 <td>备注</td>
 
@@ -21,28 +21,21 @@
 <td>{{ busy.shopname }}</td>
 <td>{{ busy.district }}</td>
 <td>{{ busy.address }}</td>
-<td>{% if busy.condition == "not_installed" %}未安装{% endif %}
-    {% if busy.condition == "installed" %}已安装{% endif %}</td>
-<td>{% if busy.condition == "installed"%}
-    {{ busy.installor }}
-    {% else %}
-    ----
-    {% endif %}
 </td>
-<td>{% if busy.condition == "installed"%}
-    {{ busy.installtime }}
-    {% else %}
-    ----
-    {% endif %}
-</td>
-<td>{% for g in user.groups.all %}
-{% if 'mnmn' == g %}
-<a href='#'>指定安装人员</a>
-{% endif %}
-{% endfor %}
+<td>
+<a href='/direct/{{busy.id}}'>指定安装人员</a>
 
 </td>
 <td>{{ busy.remarks }}</td>
+<td>
+<select>
+{% for r in busy.routing_set.all %}
+{% if r.condition == "installed" %}
+<option>{{r}}</option>
+{% endif %}
+{% endfor%}
+</select>
+</td>
 </tr>
 {% endfor %}
 </table>
