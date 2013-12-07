@@ -1,6 +1,7 @@
 {{user}}<br />
-{{maintainer.name}}<br />
+{{user.maintainer.name}}<br />
 {{maintainer.identity}}<br />
+{{user.maintainer.receive__mail.all}}
 {% for r in maintainer.installor.all %}
 {{r}}<br />
 {% endfor %}

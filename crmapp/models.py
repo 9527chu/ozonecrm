@@ -16,7 +16,13 @@ idtype=(
     (u'Administrator', u'管理员'),
     (u'installor', u'安装员'),
 )
-
+class UserMail(models.Model):
+     send_name = models.CharField(max_length=30, verbose_name=u'发件人')
+     content = models.TextField(verbose_name=u'信息内容')
+     receive_name = models.CharField(max_length=30, verbose_name=u'收件人')
+     pub_time = models.DateField(auto_now=True,verbose_name=u'发送时间')
+     def __unicode__(self):
+         return self.content
 class Maintainer(models.Model):
     number = models.CharField(max_length=30, verbose_name='编号')
     name = models.CharField(max_length=30, verbose_name=u'姓名')
@@ -24,6 +30,8 @@ class Maintainer(models.Model):
     headImg = models.FileField(upload_to='./images', verbose_name=u'头像', blank=True)
     remarks = models.TextField(verbose_name=u'备注')
     identity = models.CharField(max_length=20, choices=idtype, verbose_name=u'身份')
+    send_mail = models.ManyToManyField(UserMail, related_name='send_mail',verbose_name=u'发出的信息', blank=True, null=True)
+    receive__mail = models.ManyToManyField(UserMail, related_name='receive_mail',verbose_name=u'发出的信息',blank=True, null=True)
     user = models.OneToOneField(User, blank=True)
 
     def __unicode__(self):
@@ -37,6 +45,7 @@ class Maintainer(models.Model):
         ('can_direct', 'can direct installor'),
         ('can_install', 'can install'),
         )
+
 
 class Tag(models.Model):
     tag = models.CharField(max_length=30, verbose_name=u'经营内容')

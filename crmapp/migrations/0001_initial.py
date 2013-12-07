@@ -8,6 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'UserMail'
+        db.create_table(u'crmapp_usermail', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('send_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('content', self.gf('django.db.models.fields.TextField')()),
+            ('receive_name', self.gf('django.db.models.fields.CharField')(max_length=30)),
+            ('pub_time', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
+        ))
+        db.send_create_signal(u'crmapp', ['UserMail'])
+
         # Adding model 'Maintainer'
         db.create_table(u'crmapp_maintainer', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -20,6 +30,24 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, blank=True)),
         ))
         db.send_create_signal(u'crmapp', ['Maintainer'])
+
+        # Adding M2M table for field send_mail on 'Maintainer'
+        m2m_table_name = db.shorten_name(u'crmapp_maintainer_send_mail')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('maintainer', models.ForeignKey(orm[u'crmapp.maintainer'], null=False)),
+            ('usermail', models.ForeignKey(orm[u'crmapp.usermail'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['maintainer_id', 'usermail_id'])
+
+        # Adding M2M table for field receive__mail on 'Maintainer'
+        m2m_table_name = db.shorten_name(u'crmapp_maintainer_receive__mail')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('maintainer', models.ForeignKey(orm[u'crmapp.maintainer'], null=False)),
+            ('usermail', models.ForeignKey(orm[u'crmapp.usermail'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['maintainer_id', 'usermail_id'])
 
         # Adding model 'Tag'
         db.create_table(u'crmapp_tag', (
@@ -58,8 +86,8 @@ class Migration(SchemaMigration):
             ('mac', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('ssid', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('condition', self.gf('django.db.models.fields.CharField')(max_length=30)),
-            ('installor', self.gf('django.db.models.fields.related.ForeignKey')(related_name='installor', to=orm['crmapp.Maintainer'])),
-            ('installtime', self.gf('django.db.models.fields.DateField')()),
+            ('installor', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='installor', null=True, to=orm['crmapp.Maintainer'])),
+            ('installtime', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
             ('remarks', self.gf('django.db.models.fields.CharField')(max_length=30)),
             ('business', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['crmapp.Business'], blank=True)),
         ))
@@ -79,8 +107,17 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Deleting model 'UserMail'
+        db.delete_table(u'crmapp_usermail')
+
         # Deleting model 'Maintainer'
         db.delete_table(u'crmapp_maintainer')
+
+        # Removing M2M table for field send_mail on 'Maintainer'
+        db.delete_table(db.shorten_name(u'crmapp_maintainer_send_mail'))
+
+        # Removing M2M table for field receive__mail on 'Maintainer'
+        db.delete_table(db.shorten_name(u'crmapp_maintainer_receive__mail'))
 
         # Deleting model 'Tag'
         db.delete_table(u'crmapp_tag')
@@ -165,7 +202,9 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'number': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'phonenumber': ('django.db.models.fields.IntegerField', [], {'max_length': '200'}),
+            'receive__mail': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'receive_mail'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['crmapp.UserMail']"}),
             'remarks': ('django.db.models.fields.TextField', [], {}),
+            'send_mail': ('django.db.models.fields.related.ManyToManyField', [], {'blank': 'True', 'related_name': "'send_mail'", 'null': 'True', 'symmetrical': 'False', 'to': u"orm['crmapp.UserMail']"}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True', 'blank': 'True'})
         },
         u'crmapp.routing': {
@@ -173,8 +212,8 @@ class Migration(SchemaMigration):
             'business': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['crmapp.Business']", 'blank': 'True'}),
             'condition': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'installor': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'installor'", 'to': u"orm['crmapp.Maintainer']"}),
-            'installtime': ('django.db.models.fields.DateField', [], {}),
+            'installor': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'installor'", 'null': 'True', 'to': u"orm['crmapp.Maintainer']"}),
+            'installtime': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
             'mac': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'number': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -185,6 +224,14 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Tag'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'tag': ('django.db.models.fields.CharField', [], {'max_length': '30'})
+        },
+        u'crmapp.usermail': {
+            'Meta': {'object_name': 'UserMail'},
+            'content': ('django.db.models.fields.TextField', [], {}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'pub_time': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'receive_name': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+            'send_name': ('django.db.models.fields.CharField', [], {'max_length': '30'})
         }
     }
 

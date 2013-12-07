@@ -28,6 +28,11 @@ class UserForm(forms.Form):
     identity = forms.CharField(widget=forms.Select(choices=idtype), label=u'身份')
     remarks = forms.CharField(label=u'备注', required=False,widget = forms.Textarea)
 
+
+class MailForm(forms.Form):
+    content = forms.CharField(label=u'内容', widget = forms.Textarea)
+    receive_name = forms.CharField(label=u'收件人')
+
 class BusyForm(forms.Form):
     number = forms.CharField(label=u'商家编号',error_messages={'required':'请输入编号'})
     name =  forms.CharField(label=u'商家名字',error_messages={'required':'请输入商家名字'})
@@ -120,8 +125,30 @@ def ulogin(request):
 
 def user_home(request):
     user = request.user
-    maintainer = user.maintainer
     return render_to_response('user_home.html',locals())
+
+
+def write_mail(request):
+    if request.method == 'POST':
+        mf = MailForm(request.POST)
+        if mf.is_valid():
+            content = mf.cleaned_data['content'] 
+            receive_name = mf.cleaned_data['receive_name']
+          #  if receive_name = request.user.username or receive_name = request.user.maintainer.name:
+          #     return HttpResponse('No!')
+            user = User.objects.get(username=receive_name)
+            if not user:
+               return HttpResponse('No!')
+            mail = UserMail.objects.create(
+                send_name = request.user.username,
+                content = content,
+                receive_name = receive_name
+            )
+            user.maintainer.receive__mail.add(mail)
+            request.user.maintainer.send_mail.add(mail)
+    else:
+        mf = MailForm()
+    return render_to_response('write_mail.html',locals())                
 @login_required    
 def user_add(request):
     if request.method == 'POST':
